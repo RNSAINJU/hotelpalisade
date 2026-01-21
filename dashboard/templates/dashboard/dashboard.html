@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard-container">
+    <main class="main-content">
+        <h1>Hotel Palisade Admin Dashboard</h1>
+        <div class="dashboard-widgets">
+            <div class="widget-row">
+                <div class="widget">
+                    <h3>Total Inventory Items</h3>
+                    <p class="widget-value">{{ inventory_count }}</p>
+                </div>
+                <div class="widget">
+                    <h3>Total Inventory Value</h3>
+                    <p class="widget-value">Rs {{ total_inventory_amount|floatformat:2 }}</p>
+                </div>
+                <div class="widget">
+                    <h3>Total Sales Count</h3>
+                    <p class="widget-value">{{ sales_count }}</p>
+                </div>
+                <div class="widget">
+                    <h3>Total Sales Amount</h3>
+                    <p class="widget-value">Rs {{ total_sales_amount|floatformat:2 }}</p>
+                </div>
+            </div>
+            <p>Welcome to your custom admin dashboard!</p>
+        </div>
+    </main>
+</div>
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 2em auto;
+    padding: 2em;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.main-content {
+    background: #fff;
+    padding: 40px 60px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+}
+.main-content h1 {
+    color: #2c3e50;
+    margin-bottom: 2em;
+    text-align: center;
+}
+    .dashboard-widgets {
+        margin-bottom: 2em;
+    }
+    .widget-row {
+        display: flex;
+        gap: 2em;
+        margin-bottom: 2em;
+        flex-wrap: wrap;
+    }
+    .widget {
+        background: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        padding: 2em 2.5em;
+        min-width: 200px;
+        text-align: center;
+        flex: 1;
+    }
+    .widget h3 {
+        color: #1abc9c;
+        margin-bottom: 0.5em;
+        font-size: 1.1em;
+        letter-spacing: 1px;
+    }
+    .widget-value {
+        font-size: 2.2em;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

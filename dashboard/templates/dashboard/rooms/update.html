@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2em auto;
+        padding: 2em;
+    }
+    .form-container {
+        background: #fff;
+        border-radius: 8px;
+        padding: 2em;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5em;
+    }
+    .form-group {
+        margin-bottom: 1.5em;
+    }
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+        color: #34495e;
+        font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.8em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #1abc9c;
+    }
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+    }
+    .checkbox-group input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.5em;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.8em 1.5em;
+        background: #1abc9c;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        margin-right: 1em;
+    }
+    .btn:hover {
+        background: #16a085;
+    }
+    .btn-secondary {
+        background: #95a5a6;
+    }
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+    .button-group {
+        margin-top: 2em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h2>Edit Room {{ room.number }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_number">Room Number *</label>
+                {{ form.number }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_room_type">Room Type *</label>
+                {{ form.room_type }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_price_per_night">Price per Night *</label>
+                {{ form.price_per_night }}
+            </div>
+
+            <div class="form-group checkbox-group">
+                {{ form.is_available }}
+                <label for="id_is_available" style="margin-bottom: 0;">Available</label>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn">Update Room</button>
+                <a href="{% url 'room_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

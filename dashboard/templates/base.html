@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Palisade Admin</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Segoe+UI:400,700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4f8fb;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #2c3e50;
+        }
+        header {
+            background: #1abc9c;
+            color: #fff;
+            padding: 1.2em 2em;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.7em;
+            letter-spacing: 2px;
+        }
+        .user-info {
+            font-size: 1em;
+        }
+        nav {
+            background: #34495e;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 0;
+        }
+        nav a {
+            display: block;
+            padding: 1em 1.5em;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        nav a:hover, nav a.active {
+            background: #1abc9c;
+            color: #fff;
+        }
+        main {
+            min-height: 80vh;
+        }
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+            font-size: 0.95em;
+            letter-spacing: 1px;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Hotel Palisade Admin</h1>
+        <div class="user-info">
+            {% if user.is_authenticated %}
+                Welcome, {{ user.username }} |
+                <a href="/admin/logout/" style="color:#fff;text-decoration:underline;">Logout</a>
+            {% else %}
+                <a href="/admin/login/" style="color:#fff;text-decoration:underline;">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'inventory_list' %}">Inventory</a></li>
+            <li><a href="{% url 'room_list' %}">Rooms</a></li>
+            <li><a href="{% url 'food_item_list' %}">Food Menu</a></li>
+            <li><a href="{% url 'sales_bill_list' %}">Sales Bills</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        &copy; {{ year|default:2026 }} Hotel Palisade. All rights reserved.
+    </footer>
+</body>
+</html>
