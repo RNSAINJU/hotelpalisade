@@ -120,7 +120,7 @@
             <tr>
                 <td><strong>{{ room.number }}</strong></td>
                 <td>{{ room.get_room_type_display }}</td>
-                <td>${{ room.price_per_night }}</td>
+                <td>Rs{{ room.price_per_night }}</td>
                 <td>
                     {% if room.is_available %}
                         <span class="badge badge-success">Available</span>

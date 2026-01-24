@@ -2,6 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Authentication
+    path('login/', views.custom_login, name='login'),
+    path('logout/', views.custom_logout, name='logout'),
+    
+    # Dashboard
     path('', views.dashboard, name='dashboard'),
     
     # Inventory URLs
@@ -27,5 +32,12 @@ urlpatterns = [
     path('sales-bills/create/', views.sales_bill_create, name='sales_bill_create'),
     path('sales-bills/<int:pk>/', views.sales_bill_detail, name='sales_bill_detail'),
     path('sales-bills/<int:pk>/delete/', views.sales_bill_delete, name='sales_bill_delete'),
+    
+    # Settings URLs
+    path('settings/', views.settings_view, name='settings'),
+    path('settings/export/', views.settings_export, name='settings_export'),
+    path('settings/import/', views.settings_import, name='settings_import'),
+    path('settings/delete-all/', views.settings_delete_all, name='settings_delete_all'),
 ]
+
 

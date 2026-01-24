@@ -75,8 +75,9 @@
         <div class="item-details">
             <p><strong>Bill #:</strong> {{ bill.id }}</p>
             <p><strong>Guest Name:</strong> {{ bill.guest_name }}</p>
+            <p><strong>Room:</strong> {{ bill.room.number|default:"N/A" }}</p>
             <p><strong>Date:</strong> {{ bill.created_at|date:"M d, Y H:i" }}</p>
-            <p><strong>Total Amount:</strong> ${{ bill.total_amount }}</p>
+            <p><strong>Total Amount:</strong> Rs{{ bill.total_amount }}</p>
         </div>
 
         <p>Are you sure you want to delete this sales bill?</p>

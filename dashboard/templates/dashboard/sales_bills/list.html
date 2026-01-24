@@ -102,6 +102,7 @@
             <tr>
                 <th>Bill #</th>
                 <th>Guest Name</th>
+                <th>Room</th>
                 <th>Date</th>
                 <th>Total Amount</th>
                 <th>Actions</th>
@@ -112,8 +113,9 @@
             <tr>
                 <td><strong>#{{ bill.id }}</strong></td>
                 <td>{{ bill.guest_name }}</td>
+                <td>{{ bill.room.number|default:"N/A" }}</td>
                 <td>{{ bill.created_at|date:"M d, Y H:i" }}</td>
-                <td><strong>${{ bill.total_amount }}</strong></td>
+                <td><strong>Rs{{ bill.total_amount }}</strong></td>
                 <td>
                     <div class="actions">
                         <a href="{% url 'sales_bill_detail' bill.pk %}" class="btn btn-info">View</a>

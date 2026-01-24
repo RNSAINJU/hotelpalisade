@@ -75,7 +75,7 @@
         <div class="item-details">
             <p><strong>Room Number:</strong> {{ room.number }}</p>
             <p><strong>Type:</strong> {{ room.get_room_type_display }}</p>
-            <p><strong>Price per Night:</strong> ${{ room.price_per_night }}</p>
+            <p><strong>Price per Night:</strong> Rs{{ room.price_per_night }}</p>
             <p><strong>Status:</strong> {% if room.is_available %}Available{% else %}Occupied{% endif %}</p>
         </div>
 

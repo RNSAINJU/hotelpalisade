@@ -75,7 +75,7 @@
         <div class="item-details">
             <p><strong>Name:</strong> {{ food_item.name }}</p>
             <p><strong>Description:</strong> {{ food_item.description|default:"No description" }}</p>
-            <p><strong>Price:</strong> ${{ food_item.price }}</p>
+            <p><strong>Price:</strong> Rs{{ food_item.price }}</p>
             <p><strong>Status:</strong> {% if food_item.available %}Available{% else %}Unavailable{% endif %}</p>
         </div>
 

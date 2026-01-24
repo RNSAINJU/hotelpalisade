@@ -109,7 +109,7 @@
                 <select name="food_items[]" required>
                     <option value="">-- Select Item --</option>
                     {% for item in food_items %}
-                    <option value="{{ item.id }}" data-price="{{ item.price }}">{{ item.name }} - ${{ item.price }}</option>
+                    <option value="{{ item.id }}" data-price="{{ item.price }}">{{ item.name }} - Rs{{ item.price }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -129,21 +129,34 @@
     }
 
     function updateTotal() {
-        let total = 0;
+        let foodTotal = 0;
         const rows = document.querySelectorAll('.item-row');
         rows.forEach(row => {
             const select = row.querySelector('select[name="food_items[]"]');
             const quantity = row.querySelector('input[name="quantities[]"]');
             if (select && quantity && select.value) {
                 const price = parseFloat(select.options[select.selectedIndex].getAttribute('data-price') || 0);
-                total += price * parseInt(quantity.value || 0);
+                foodTotal += price * parseInt(quantity.value || 0);
             }
         });
+        
+        // Get room charge if room is selected
+        const roomSelect = document.getElementById('id_room');
+        let roomCharge = 0;
+        if (roomSelect && roomSelect.value) {
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+            roomCharge = parseFloat(selectedOption.getAttribute('data-price') || 0);
+        }
+        
+        const total = foodTotal + roomCharge;
         document.getElementById('total_amount').value = total.toFixed(2);
+        document.getElementById('room_charge_display').textContent = 'Rs' + roomCharge.toFixed(2);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('items-container').addEventListener('change', updateTotal);
+        document.getElementById('id_room').addEventListener('change', updateTotal);
+        updateTotal();
     });
 </script>
 {% endblock %}
@@ -160,6 +173,18 @@
                 {{ form.guest_name }}
             </div>
 
+            <div class="form-group">
+                <label for="id_room">Room (Optional)</label>
+                <select id="id_room" name="room">
+                    <option value="">-- No Room Selected --</option>
+                    {% for room in rooms %}
+                    <option value="{{ room.id }}" data-price="{{ room.price_per_night }}">
+                        Room {{ room.number }} ({{ room.get_room_type_display }}) - Rs{{ room.price_per_night }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
             <div class="items-section">
                 <h3>Order Items</h3>
                 <div id="items-container">
@@ -169,7 +194,7 @@
                             <select name="food_items[]" required>
                                 <option value="">-- Select Item --</option>
                                 {% for item in food_items %}
-                                <option value="{{ item.id }}" data-price="{{ item.price }}">{{ item.name }} - ${{ item.price }}</option>
+                                <option value="{{ item.id }}" data-price="{{ item.price }}">{{ item.name }} - Rs{{ item.price }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -184,8 +209,19 @@
             </div>
 
             <div class="total-section">
-                <label for="id_total_amount" style="display: inline; margin-right: 1em;">Total Amount: $</label>
-                <input type="number" id="total_amount" name="total_amount" step="0.01" value="0.00" style="width: 150px; display: inline-block;" required readonly>
+                <h3 style="margin-top: 0; color: #2c3e50;">Bill Summary</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 1.5em;">
+                    <div style="text-align: left;">
+                        <p style="color: #7f8c8d; margin: 0.5em 0;">Room Charge:</p>
+                        <p style="font-size: 1.1em; color: #2c3e50;">
+                            <span id="room_charge_display">Rs0.00</span>
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="color: #7f8c8d; margin: 0.5em 0;">Total Amount:</p>
+                        <p style="font-size: 1.3em; color: #1abc9c; font-weight: bold;">Rs<input type="number" id="total_amount" name="total_amount" step="0.01" value="0.00" style="width: 150px; display: inline-block; padding: 0.3em; border: none; background: transparent; text-align: right;" required readonly></p>
+                    </div>
+                </div>
             </div>
 
             <div class="button-group">

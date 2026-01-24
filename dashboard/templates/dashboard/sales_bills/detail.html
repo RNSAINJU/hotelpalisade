@@ -103,7 +103,228 @@
         padding-top: 1.5em;
         border-top: 1px solid #ecf0f1;
     }
+    .summary-list {
+        background: #f8f9fa;
+        padding: 1.5em;
+        border-radius: 5px;
+        margin: 1.5em 0;
+    }
+    .summary-list h4 {
+        color: #34495e;
+        margin-top: 0;
+        font-size: 1em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8em;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    .summary-item-label {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+    .summary-item-value {
+        color: #1abc9c;
+        font-weight: bold;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8em;
+    }
+    .summary-row.section-title {
+        background: #ecf0f1;
+        font-weight: 600;
+        color: #34495e;
+        margin-top: 1em;
+    }
+    .btn-print {
+        background: #3498db;
+    }
+    .btn-print:hover {
+        background: #2980b9;
+    }
+    
+    /* Print Styles */
+    @media print {
+        /* Set page size to 4" x 6" */
+        @page {
+            size: 4in 6in;
+            margin: 0.2in;
+        }
+        
+        body {
+            background: white !important;
+            margin: 0;
+            font-size: 10px !important;
+        }
+        
+        /* Hide all page elements except bill content */
+        header, nav, footer, .btn, .button-group {
+            display: none !important;
+        }
+        
+        /* Reset main container for print */
+        main {
+            min-height: auto !important;
+        }
+        
+        .container {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .bill-container {
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .bill-header {
+            border-bottom: 1px solid #000 !important;
+            page-break-after: avoid !important;
+            padding-bottom: 5px !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .bill-header h2 {
+            color: #000 !important;
+            font-size: 14px !important;
+            margin: 0 0 3px 0 !important;
+        }
+        
+        .bill-info {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 5px !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .info-item {
+            page-break-inside: avoid !important;
+            padding: 3px !important;
+            background: #f5f5f5 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .info-item label {
+            font-size: 8px !important;
+            margin-bottom: 2px !important;
+        }
+        
+        .info-item strong {
+            font-size: 10px !important;
+        }
+        
+        .summary-list {
+            page-break-inside: avoid !important;
+            background: #f8f8f8 !important;
+            padding: 5px !important;
+            margin: 5px 0 !important;
+            border-radius: 3px !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .summary-list h4 {
+            font-size: 10px !important;
+            margin: 0 0 3px 0 !important;
+        }
+        
+        .summary-item {
+            padding: 3px !important;
+            font-size: 9px !important;
+            border-bottom: 1px dotted #ddd !important;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none !important;
+        }
+        
+        .summary-item-label {
+            font-size: 9px !important;
+        }
+        
+        .summary-item-value {
+            font-size: 10px !important;
+            font-weight: bold !important;
+        }
+        
+        .items-section h3 {
+            font-size: 11px !important;
+            margin: 8px 0 5px 0 !important;
+            display: none; /* Hide "Detailed Breakdown" header to save space */
+        }
+        
+        table {
+            page-break-inside: avoid !important;
+            width: 100% !important;
+            font-size: 9px !important;
+            border-collapse: collapse !important;
+        }
+        
+        th, td {
+            padding: 3px 2px !important;
+            font-size: 9px !important;
+        }
+        
+        thead {
+            background: #f0f0f0 !important;
+            color: #000 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        thead th {
+            font-size: 9px !important;
+            font-weight: bold !important;
+        }
+        
+        .total-row {
+            background: #f0f0f0 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .total-row td {
+            font-size: 10px !important;
+            font-weight: bold !important;
+            padding: 4px 2px !important;
+        }
+        
+        /* Add Hotel header for print */
+        .bill-container::before {
+            content: "HOTEL PALISADE";
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #000;
+        }
+    }
 </style>
+<script>
+    function printBill() {
+        // Set page title for printing
+        const originalTitle = document.title;
+        document.title = 'Bill #{{ bill.id }}';
+        
+        window.print();
+        
+        // Restore original title
+        document.title = originalTitle;
+    }
+</script>
 {% endblock %}
 
 {% block content %}
@@ -119,13 +340,61 @@
                 <strong>{{ bill.guest_name }}</strong>
             </div>
             <div class="info-item">
+                <label>Room</label>
+                <strong>{{ bill.room.number|default:"N/A" }}</strong>
+            </div>
+            <div class="info-item">
                 <label>Date & Time</label>
                 <strong>{{ bill.created_at|date:"M d, Y H:i" }}</strong>
             </div>
         </div>
 
         <div class="items-section">
-            <h3>Order Items</h3>
+            <h3>Bill Summary</h3>
+
+            <!-- Room Selection -->
+            <div class="summary-list">
+                <h4>🏨 Room Details</h4>
+                {% if bill.room %}
+                    <div class="summary-item">
+                        <span class="summary-item-label">Room Number:</span>
+                        <span class="summary-item-value">{{ bill.room.number }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-item-label">Room Type:</span>
+                        <span class="summary-item-value">{{ bill.room.get_room_type_display }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-item-label">Room Charge:</span>
+                        <span class="summary-item-value">Rs{{ bill.room_charge }}</span>
+                    </div>
+                {% else %}
+                    <div class="summary-item">
+                        <span class="summary-item-label">Room:</span>
+                        <span class="summary-item-value">No Room Selected</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Food Items Selection -->
+            <div class="summary-list">
+                <h4>🍽️ Food Items Ordered</h4>
+                {% for item in items %}
+                    <div class="summary-item">
+                        <span class="summary-item-label">
+                            {{ item.food_item.name }} <small style="color: #7f8c8d;">(x{{ item.quantity }})</small>
+                        </span>
+                        <span class="summary-item-value">Rs{{ item.price|floatformat:2 }}</span>
+                    </div>
+                {% empty %}
+                    <div class="summary-item">
+                        <span class="summary-item-label">No items ordered</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Cost Breakdown Table (Original) -->
+            <h3>Detailed Breakdown</h3>
             <table>
                 <thead>
                     <tr>
@@ -139,20 +408,31 @@
                     {% for item in items %}
                     <tr>
                         <td>{{ item.food_item.name }}</td>
-                        <td>${{ item.price }}</td>
+                        <td>Rs{{ item.price }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>${{ item.price|floatformat:2 }}</td>
+                        <td>Rs{{ item.price|floatformat:2 }}</td>
                     </tr>
                     {% endfor %}
                     <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">Food Items Subtotal:</td>
+                        <td>Rs{% widthratio items|length 1 1 %}{{ food_total|default:"0.00" }}</td>
+                    </tr>
+                    {% if bill.room_charge > 0 %}
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">Room Charge:</td>
+                        <td>Rs{{ bill.room_charge }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row">
                         <td colspan="3" style="text-align: right;">Total Amount:</td>
-                        <td>${{ bill.total_amount }}</td>
+                        <td>Rs{{ bill.total_amount }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="button-group">
+            <button onclick="printBill()" class="btn btn-print">🖨️ Print Bill</button>
             <a href="{% url 'sales_bill_list' %}" class="btn btn-secondary">Back to List</a>
             <a href="{% url 'sales_bill_delete' bill.pk %}" class="btn btn-danger">Delete Bill</a>
         </div>

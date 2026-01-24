@@ -120,7 +120,7 @@
             <tr>
                 <td><strong>{{ item.name }}</strong></td>
                 <td>{{ item.description|truncatewords:10 }}</td>
-                <td>${{ item.price }}</td>
+                <td>Rs{{ item.price }}</td>
                 <td>
                     {% if item.available %}
                         <span class="badge badge-success">Available</span>

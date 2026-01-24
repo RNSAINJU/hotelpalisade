@@ -1,5 +1,6 @@
 
 from django.db import models
+from rooms.models import Room
 
 class FoodItem(models.Model):
 	name = models.CharField(max_length=100)
@@ -13,11 +14,18 @@ class FoodItem(models.Model):
 class SalesBill(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	guest_name = models.CharField(max_length=100)
+	room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True, related_name="sales_bills")
+	room_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 	items = models.ManyToManyField(FoodItem, through="SalesBillItem")
 	total_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 	def __str__(self):
 		return f"Bill #{self.id} - {self.guest_name}"
+	
+	def calculate_total(self):
+		"""Calculate total including food items and room charge"""
+		items_total = sum(item.price * item.quantity for item in self.salesbillitem_set.all())
+		return items_total + self.room_charge
 
 class SalesBillItem(models.Model):
 	sales_bill = models.ForeignKey(SalesBill, on_delete=models.CASCADE)
