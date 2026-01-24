@@ -1,0 +1,72 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+__pycache__/
+*.pyc
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+/static
+local_settings.py
+migrations/
+*/migrations/
+
+# App-specific ignores
+dashboard/__pycache__/
+finance/__pycache__/
+finance/migrations/
+sales/migrations/
+rooms/__pycache__/
+rooms/migrations/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+
+# Environment variables
+.env
+.env.local
+
+# OS
+Thumbs.db
+.directory
