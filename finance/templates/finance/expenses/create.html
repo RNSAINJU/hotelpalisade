@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form-container">
+    <h2>Add Expense</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="form-row">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" required>
+        </div>
+        <div class="form-row">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+            <label for="amount">Amount (Rs)</label>
+            <input type="number" step="0.01" name="amount" id="amount" required>
+        </div>
+        <div class="form-row">
+            <label for="category">Category</label>
+            <select name="category" id="category" required>
+                <option value="">Select Category</option>
+                <option value="utilities">Utilities</option>
+                <option value="supplies">Supplies</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="marketing">Marketing</option>
+                <option value="transport">Transport</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Add Expense</button>
+            <a href="{% url 'expense_list' %}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+<style>
+.form-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    padding: 1.5em;
+    margin: 1em;
+    max-width: 600px;
+}
+.form-container h2 {
+    margin: 0 0 1em 0;
+    color: #2c3e50;
+}
+.form .form-row {
+    margin-bottom: 1.2em;
+}
+.form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.4em;
+    color: #2c3e50;
+}
+.form input, .form textarea, .form select {
+    width: 100%;
+    padding: 0.7em;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f4f8fb;
+}
+.form-actions {
+    display: flex;
+    gap: 1em;
+    margin-top: 1.5em;
+    flex-wrap: wrap;
+}
+.submit-btn {
+    background: #1abc9c;
+    color: #fff;
+    padding: 0.7em 2em;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+    min-width: 120px;
+}
+.submit-btn:hover {
+    background: #159c85;
+}
+.cancel-btn {
+    background: #e0e0e0;
+    color: #2c3e50;
+    padding: 0.7em 2em;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+}
+.cancel-btn:hover {
+    background: #b0b0b0;
+}
+@media (max-width: 768px) {
+    .form-container {
+        margin: 0.5em;
+        padding: 1em;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .submit-btn, .cancel-btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

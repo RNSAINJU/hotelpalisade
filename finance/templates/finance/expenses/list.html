@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 1em;
+        padding: 1.5em;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    }
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5em;
+        flex-wrap: wrap;
+        gap: 1em;
+    }
+    .header-section h2 {
+        color: #2c3e50;
+        font-size: 1.5em;
+        margin: 0;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.7em 1.5em;
+        background: #1abc9c;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+        font-weight: 600;
+        font-size: 0.95em;
+        white-space: nowrap;
+    }
+    .btn:hover {
+        background: #16a085;
+    }
+    .btn-danger {
+        background: #e74c3c;
+    }
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+    .btn-secondary {
+        background: #95a5a6;
+    }
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95em;
+    }
+    thead {
+        background: #34495e;
+        color: #fff;
+    }
+    th, td {
+        padding: 0.8em;
+        text-align: left;
+    }
+    tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    tbody tr:hover {
+        background: #e8f4f2;
+    }
+    .actions {
+        display: flex;
+        gap: 0.5em;
+        flex-wrap: wrap;
+    }
+    .actions a {
+        padding: 0.4em 0.8em;
+        font-size: 0.85em;
+    }
+    .category-badge {
+        padding: 0.3em 0.6em;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3em 1em;
+        color: #7f8c8d;
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            margin: 0.5em;
+            padding: 1em;
+        }
+        .header-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .hide-mobile {
+            display: none;
+        }
+        table {
+            font-size: 0.85em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h2>Expenses</h2>
+        <a href="{% url 'expense_create' %}" class="btn">+ Add Expense</a>
+    </div>
+
+    {% if expenses %}
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th class="hide-mobile">Description</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td><strong>{{ expense.title }}</strong></td>
+                    <td class="hide-mobile">{{ expense.description|truncatewords:10 }}</td>
+                    <td><strong>Rs {{ expense.amount }}</strong></td>
+                    <td><span class="category-badge">{{ expense.get_category_display }}</span></td>
+                    <td>{{ expense.date|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'expense_update' expense.pk %}" class="btn btn-secondary">Edit</a>
+                            <a href="{% url 'expense_delete' expense.pk %}" class="btn btn-danger">Del</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No expenses found. <a href="{% url 'expense_create' %}">Add your first expense</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

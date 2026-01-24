@@ -22,7 +22,12 @@
                     <p class="widget-value">Rs {{ total_sales_amount|floatformat:2 }}</p>
                 </div>
             </div>
-            <p>Welcome to your custom admin dashboard!</p>
+            
+            <!-- Sales Chart Section -->
+            <div class="chart-container">
+                <h2>Sales Overview - Last 7 Days</h2>
+                <canvas id="salesChart"></canvas>
+            </div>
         </div>
     </main>
 </div>
@@ -44,34 +49,156 @@
     margin-bottom: 2em;
     text-align: center;
 }
-    .dashboard-widgets {
-        margin-bottom: 2em;
+.dashboard-widgets {
+    margin-bottom: 2em;
+}
+.widget-row {
+    display: flex;
+    gap: 2em;
+    margin-bottom: 2em;
+    flex-wrap: wrap;
+}
+.widget {
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    padding: 2em 2.5em;
+    min-width: 200px;
+    text-align: center;
+    flex: 1;
+}
+.widget h3 {
+    color: #1abc9c;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+    letter-spacing: 1px;
+}
+.widget-value {
+    font-size: 2.2em;
+    color: #2c3e50;
+    font-weight: bold;
+}
+.chart-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 2em;
+    margin-top: 2em;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+}
+.chart-container h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5em;
+    text-align: center;
+    font-size: 1.3em;
+}
+#salesChart {
+    max-height: 400px;
+}
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1em;
+    }
+    .main-content {
+        padding: 1.5em;
     }
     .widget-row {
-        display: flex;
-        gap: 2em;
-        margin-bottom: 2em;
-        flex-wrap: wrap;
+        flex-direction: column;
     }
     .widget {
-        background: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-        padding: 2em 2.5em;
-        min-width: 200px;
-        text-align: center;
-        flex: 1;
+        min-width: auto;
     }
-    .widget h3 {
-        color: #1abc9c;
-        margin-bottom: 0.5em;
-        font-size: 1.1em;
-        letter-spacing: 1px;
-    }
-    .widget-value {
-        font-size: 2.2em;
-        color: #2c3e50;
-        font-weight: bold;
-    }
+}
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesData = {{ daily_sales|safe }};
+    const labels = {{ daily_labels|safe }};
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sales Amount (Rs)',
+                data: salesData,
+                borderColor: '#1abc9c',
+                backgroundColor: 'rgba(26, 188, 156, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#1abc9c',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#2c3e50'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(44, 62, 80, 0.9)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rs ' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rs ' + value;
+                        },
+                        font: {
+                            size: 12
+                        },
+                        color: '#7f8c8d'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        },
+                        color: '#7f8c8d'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

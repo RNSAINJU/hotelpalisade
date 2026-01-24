@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(44,62,80,0.08);padding:1.5em;margin:1em;max-width:600px">
+    <h2 style="margin:0 0 1em 0;color:#2c3e50">Update Employee</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Name</label>
+        <input type="text" name="name" value="{{ employee.name }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Position</label>
+        <select name="position" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb">
+            <option value="">Select Position</option>
+            <option value="manager" {% if employee.position == 'manager' %}selected{% endif %}>Manager</option>
+            <option value="receptionist" {% if employee.position == 'receptionist' %}selected{% endif %}>Receptionist</option>
+            <option value="housekeeping" {% if employee.position == 'housekeeping' %}selected{% endif %}>Housekeeping</option>
+            <option value="chef" {% if employee.position == 'chef' %}selected{% endif %}>Chef</option>
+            <option value="waiter" {% if employee.position == 'waiter' %}selected{% endif %}>Waiter</option>
+            <option value="security" {% if employee.position == 'security' %}selected{% endif %}>Security</option>
+            <option value="maintenance" {% if employee.position == 'maintenance' %}selected{% endif %}>Maintenance</option>
+            <option value="other" {% if employee.position == 'other' %}selected{% endif %}>Other</option>
+        </select></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Phone</label>
+        <input type="text" name="phone" value="{{ employee.phone }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Email</label>
+        <input type="email" name="email" value="{{ employee.email }}" style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Address</label>
+        <textarea name="address" rows="3" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb">{{ employee.address }}</textarea></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Monthly Salary (Rs)</label>
+        <input type="number" step="0.01" name="monthly_salary" value="{{ employee.monthly_salary }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Date Joined</label>
+        <input type="date" name="date_joined" value="{{ employee.date_joined|date:'Y-m-d' }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label><input type="checkbox" name="is_active" {% if employee.is_active %}checked{% endif %}> Active</label></div>
+        <div style="display:flex;gap:1em;margin-top:1.5em">
+            <button type="submit" style="background:#1abc9c;color:#fff;padding:0.7em 2em;border-radius:6px;border:none;font-weight:bold;cursor:pointer;flex:1">Update Employee</button>
+            <a href="{% url 'employee_list' %}" style="background:#e0e0e0;color:#2c3e50;padding:0.7em 2em;border-radius:6px;text-decoration:none;font-weight:bold;text-align:center;flex:1">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

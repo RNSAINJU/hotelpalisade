@@ -102,6 +102,14 @@
         background: #f8d7da;
         color: #721c24;
     }
+    .badge-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .badge-info {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
     .empty-state {
         text-align: center;
         padding: 3em 1em;
@@ -180,10 +188,14 @@
                     <td data-label="Type">{{ room.get_room_type_display }}</td>
                     <td data-label="Price">Rs{{ room.price_per_night }}</td>
                     <td data-label="Status">
-                        {% if room.is_available %}
+                        {% if room.status == 'available' %}
                             <span class="badge badge-success">Available</span>
-                        {% else %}
+                        {% elif room.status == 'booked' %}
+                            <span class="badge badge-warning">Booked</span>
+                        {% elif room.status == 'occupied' %}
                             <span class="badge badge-danger">Occupied</span>
+                        {% elif room.status == 'maintenance' %}
+                            <span class="badge badge-info">Maintenance</span>
                         {% endif %}
                     </td>
                     <td data-label="Actions">

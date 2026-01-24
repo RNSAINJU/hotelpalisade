@@ -148,14 +148,86 @@
             roomCharge = parseFloat(selectedOption.getAttribute('data-price') || 0);
         }
         
-        const total = foodTotal + roomCharge;
+        // Calculate subtotal before discount
+        const subtotal = foodTotal + roomCharge;
+        document.getElementById('subtotal_display').textContent = 'Rs' + subtotal.toFixed(2);
+        
+        // Apply discount
+        const discountPercentage = parseFloat(document.getElementById('discount_percentage').value || 0);
+        const discountAmount = (subtotal * discountPercentage) / 100;
+        document.getElementById('discount_amount').value = discountAmount.toFixed(2);
+        document.getElementById('discount_display').textContent = 'Rs' + discountAmount.toFixed(2) + ' (' + discountPercentage + '%)';
+        
+        // Calculate final total
+        const total = subtotal - discountAmount;
         document.getElementById('total_amount').value = total.toFixed(2);
         document.getElementById('room_charge_display').textContent = 'Rs' + roomCharge.toFixed(2);
+        
+        // Update remaining amount for payment
+        updatePaymentRemaining();
+    }
+
+    function addPaymentRow() {
+        const container = document.getElementById('payments-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'item-row';
+        newRow.innerHTML = `
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>Payment Method</label>
+                <select name="payment_methods[]" required onchange="updatePaymentRemaining()">
+                    <option value="">-- Select Method --</option>
+                    <option value="cash">Cash</option>
+                    <option value="card">Card</option>
+                    <option value="online">Online</option>
+                    <option value="upi">UPI</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>Amount</label>
+                <input type="number" name="payment_amounts[]" step="0.01" min="0" required oninput="updatePaymentRemaining()">
+            </div>
+            <button type="button" class="btn btn-danger btn-small" onclick="removePaymentRow(this)">Remove</button>
+        `;
+        container.appendChild(newRow);
+        updatePaymentRemaining();
+    }
+
+    function removePaymentRow(button) {
+        button.parentElement.remove();
+        updatePaymentRemaining();
+    }
+
+    function updatePaymentRemaining() {
+        const totalAmount = parseFloat(document.getElementById('total_amount').value || 0);
+        let paidAmount = 0;
+        
+        const paymentRows = document.querySelectorAll('#payments-container .item-row');
+        paymentRows.forEach(row => {
+            const amountInput = row.querySelector('input[name="payment_amounts[]"]');
+            if (amountInput && amountInput.value) {
+                paidAmount += parseFloat(amountInput.value || 0);
+            }
+        });
+        
+        const remaining = totalAmount - paidAmount;
+        document.getElementById('paid_amount_display').textContent = 'Rs' + paidAmount.toFixed(2);
+        document.getElementById('remaining_display').textContent = 'Rs' + remaining.toFixed(2);
+        
+        // Change color based on payment status
+        const remainingElement = document.getElementById('remaining_display');
+        if (remaining < 0) {
+            remainingElement.style.color = '#e74c3c'; // Red for overpayment
+        } else if (remaining === 0) {
+            remainingElement.style.color = '#27ae60'; // Green for fully paid
+        } else {
+            remainingElement.style.color = '#f39c12'; // Orange for pending
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('items-container').addEventListener('change', updateTotal);
         document.getElementById('id_room').addEventListener('change', updateTotal);
+        document.getElementById('discount_percentage').addEventListener('input', updateTotal);
         updateTotal();
     });
 </script>
@@ -179,7 +251,7 @@
                     <option value="">-- No Room Selected --</option>
                     {% for room in rooms %}
                     <option value="{{ room.id }}" data-price="{{ room.price_per_night }}">
-                        Room {{ room.number }} ({{ room.get_room_type_display }}) - Rs{{ room.price_per_night }}
+                        Room {{ room.number }} ({{ room.get_room_type_display }}) - {{ room.get_status_display }} - Rs{{ room.price_per_night }}
                     </option>
                     {% endfor %}
                 </select>
@@ -208,19 +280,48 @@
                 <button type="button" class="btn btn-secondary btn-small" onclick="addItemRow()">+ Add Another Item</button>
             </div>
 
+            <div class="form-group">
+                <label for="discount_percentage">Discount (%)</label>
+                <input type="number" id="discount_percentage" name="discount_percentage" min="0" max="100" step="0.01" value="0" style="width: 200px;">
+            </div>
+
+            <div class="items-section" style="margin-top: 2em;">
+                <h3>Payment Methods</h3>
+                <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 1em;">Add one or more payment methods (split payments allowed)</p>
+                <div id="payments-container">
+                    <div class="item-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Payment Method</label>
+                            <select name="payment_methods[]" required onchange="updatePaymentRemaining()">
+                                <option value="">-- Select Method --</option>
+                                <option value="cash" selected>Cash</option>
+                                <option value="card">Card</option>
+                                <option value="online">Online</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Amount</label>
+                            <input type="number" name="payment_amounts[]" step="0.01" min="0" required oninput="updatePaymentRemaining()">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-small" onclick="addPaymentRow()" style="margin-top: 1em;">+ Add Another Payment Method</button>
+            </div>
+
             <div class="total-section">
                 <h3 style="margin-top: 0; color: #2c3e50;">Bill Summary</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 1.5em;">
-                    <div style="text-align: left;">
-                        <p style="color: #7f8c8d; margin: 0.5em 0;">Room Charge:</p>
-                        <p style="font-size: 1.1em; color: #2c3e50;">
-                            <span id="room_charge_display">Rs0.00</span>
-                        </p>
-                    </div>
-                    <div style="text-align: right;">
-                        <p style="color: #7f8c8d; margin: 0.5em 0;">Total Amount:</p>
-                        <p style="font-size: 1.3em; color: #1abc9c; font-weight: bold;">Rs<input type="number" id="total_amount" name="total_amount" step="0.01" value="0.00" style="width: 150px; display: inline-block; padding: 0.3em; border: none; background: transparent; text-align: right;" required readonly></p>
-                    </div>
+                <div style="text-align: right; font-size: 1em;">
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Room Charge: <span id="room_charge_display" style="color: #2c3e50; font-weight: 600;">Rs0.00</span></p>
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Subtotal: <span id="subtotal_display" style="color: #2c3e50; font-weight: 600;">Rs0.00</span></p>
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Discount: <span id="discount_display" style="color: #e74c3c; font-weight: 600;">Rs0.00 (0%)</span></p>
+                    <input type="hidden" id="discount_amount" name="discount_amount" value="0.00">
+                    <hr style="border: none; border-top: 2px solid #ddd; margin: 1em 0;">
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Total Amount:</p>
+                    <p style="font-size: 1.5em; color: #1abc9c; font-weight: bold; margin: 0.5em 0;">Rs<input type="number" id="total_amount" name="total_amount" step="0.01" value="0.00" style="width: 150px; display: inline-block; padding: 0.3em; border: none; background: transparent; text-align: right; font-size: 1em; color: #1abc9c; font-weight: bold;" required readonly></p>
+                    <hr style="border: none; border-top: 1px dashed #ddd; margin: 1em 0;">
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Paid Amount: <span id="paid_amount_display" style="color: #27ae60; font-weight: 600;">Rs0.00</span></p>
+                    <p style="color: #7f8c8d; margin: 0.5em 0;">Remaining: <span id="remaining_display" style="color: #f39c12; font-weight: 600; font-size: 1.1em;">Rs0.00</span></p>
                 </div>
             </div>
 

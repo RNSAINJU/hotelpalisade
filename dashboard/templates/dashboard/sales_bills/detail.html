@@ -348,6 +348,18 @@
                 <strong>{{ bill.created_at|date:"M d, Y H:i" }}</strong>
             </div>
         </div>
+        
+        <div class="bill-info" style="background: #e8f8f5; padding: 1em; border-radius: 5px; margin-top: 1em;">
+            <h4 style="margin: 0 0 0.5em 0; color: #2c3e50;">💳 Payment Details</h4>
+            {% for payment in bill.payments.all %}
+            <div class="info-item">
+                <label>{{ payment.get_payment_method_display }}</label>
+                <strong>Rs{{ payment.amount }}</strong>
+            </div>
+            {% empty %}
+            <p style="margin: 0; color: #7f8c8d;">No payment recorded</p>
+            {% endfor %}
+        </div>
 
         <div class="items-section">
             <h3>Bill Summary</h3>
@@ -423,9 +435,15 @@
                         <td>Rs{{ bill.room_charge }}</td>
                     </tr>
                     {% endif %}
-                    <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">Total Amount:</td>
-                        <td>Rs{{ bill.total_amount }}</td>
+                    {% if bill.discount_amount > 0 %}
+                    <tr class="total-row" style="background: #fff3cd !important;">
+                        <td colspan="3" style="text-align: right; color: #856404;">Discount ({{ bill.discount_percentage }}%):</td>
+                        <td style="color: #e74c3c;">- Rs{{ bill.discount_amount }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row" style="background: #d4edda !important;">
+                        <td colspan="3" style="text-align: right; font-size: 1.1em;">Total Amount:</td>
+                        <td style="font-size: 1.1em; color: #155724;">Rs{{ bill.total_amount }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -91,6 +91,43 @@
             background: #1abc9c;
             color: #fff;
         }
+        
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-toggle {
+            cursor: pointer;
+            position: relative;
+            padding-right: 2em !important;
+        }
+        .dropdown-toggle::after {
+            content: '▼';
+            position: absolute;
+            right: 0.8em;
+            font-size: 0.7em;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #2c3e50;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-menu a {
+            padding: 0.8em 1.2em;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+        
         main {
             min-height: 80vh;
             padding: 0.5em;
@@ -140,6 +177,21 @@
                 padding: 0.8em;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
             }
+            .dropdown-menu {
+                position: static;
+                display: none;
+                box-shadow: none;
+                background: #1f2f3f;
+            }
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+            .dropdown-toggle::after {
+                content: '▼';
+            }
+            .dropdown.active .dropdown-toggle::after {
+                content: '▲';
+            }
         }
         
         @media (max-width: 480px) {
@@ -179,6 +231,17 @@
             <li><a href="{% url 'room_list' %}">Rooms</a></li>
             <li><a href="{% url 'food_item_list' %}">Food Menu</a></li>
             <li><a href="{% url 'sales_bill_list' %}">Sales Bills</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">Finance</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'balance_sheet' %}">Balance Sheet</a>
+                    <a href="{% url 'expense_list' %}">Expenses</a>
+                    <a href="{% url 'employee_list' %}">Employees</a>
+                    <a href="{% url 'salary_payment_list' %}">Salary Payments</a>
+                    <a href="{% url 'debtor_list' %}">Sundry Debtors</a>
+                    <a href="{% url 'creditor_list' %}">Sundry Creditors</a>
+                </div>
+            </li>
             <li><a href="{% url 'settings' %}">Settings</a></li>
         </ul>
     </nav>
@@ -194,8 +257,16 @@
             menu.classList.toggle('active');
         }
         
+        function toggleDropdown(event) {
+            event.preventDefault();
+            if (window.innerWidth <= 768) {
+                const dropdown = event.target.closest('.dropdown');
+                dropdown.classList.toggle('active');
+            }
+        }
+        
         // Close menu when clicking a link on mobile
-        document.querySelectorAll('nav a').forEach(link => {
+        document.querySelectorAll('nav a:not(.dropdown-toggle)').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
                     document.getElementById('navMenu').classList.remove('active');

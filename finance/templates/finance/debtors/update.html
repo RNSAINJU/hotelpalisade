@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(44,62,80,0.08);padding:1.5em;margin:1em;max-width:600px">
+    <h2 style="margin:0 0 1em 0;color:#2c3e50">Update Sundry Debtor</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Name</label>
+        <input type="text" name="name" value="{{ debtor.name }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Contact</label>
+        <input type="text" name="contact" value="{{ debtor.contact }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Email</label>
+        <input type="email" name="email" value="{{ debtor.email }}" style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Amount Due (Rs)</label>
+        <input type="number" step="0.01" name="amount_due" value="{{ debtor.amount_due }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Due Date</label>
+        <input type="date" name="due_date" value="{{ debtor.due_date|date:'Y-m-d' }}" required style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb"></div>
+        <div style="margin-bottom:1em"><label style="display:block;font-weight:500;margin-bottom:0.4em">Description</label>
+        <textarea name="description" rows="3" style="width:100%;padding:0.7em;border:1px solid #d0d7de;border-radius:6px;background:#f4f8fb">{{ debtor.description }}</textarea></div>
+        <div style="margin-bottom:1em"><label><input type="checkbox" name="is_paid" {% if debtor.is_paid %}checked{% endif %}> Mark as Paid</label></div>
+        <div style="display:flex;gap:1em;margin-top:1.5em">
+            <button type="submit" style="background:#1abc9c;color:#fff;padding:0.7em 2em;border-radius:6px;border:none;font-weight:bold;cursor:pointer;flex:1">Update Debtor</button>
+            <a href="{% url 'debtor_list' %}" style="background:#e0e0e0;color:#2c3e50;padding:0.7em 2em;border-radius:6px;text-decoration:none;font-weight:bold;text-align:center;flex:1">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

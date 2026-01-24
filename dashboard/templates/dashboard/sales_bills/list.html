@@ -151,6 +151,7 @@
                     <th>Bill #</th>
                     <th>Guest</th>
                     <th class="hide-mobile">Room</th>
+                    <th class="hide-mobile">Payment</th>
                     <th class="hide-mobile">Date</th>
                     <th>Amount</th>
                     <th>Actions</th>
@@ -162,6 +163,13 @@
                     <td data-label="Bill #"><strong>#{{ bill.id }}</strong></td>
                     <td data-label="Guest">{{ bill.guest_name }}</td>
                     <td data-label="Room" class="hide-mobile">{{ bill.room.number|default:"N/A" }}</td>
+                    <td data-label="Payment" class="hide-mobile" style="font-size: 0.85em;">
+                        {% for payment in bill.payments.all %}
+                            {{ payment.get_payment_method_display }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            N/A
+                        {% endfor %}
+                    </td>
                     <td data-label="Date" class="hide-mobile">{{ bill.created_at|date:"M d, Y" }}</td>
                     <td data-label="Amount"><strong>Rs{{ bill.total_amount }}</strong></td>
                     <td data-label="Actions">

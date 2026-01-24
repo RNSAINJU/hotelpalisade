@@ -7,8 +7,9 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.core import serializers
+from decimal import Decimal
 from inventory.models import InventoryItem
-from sales.models import SalesBill, FoodItem, SalesBillItem
+from sales.models import SalesBill, FoodItem, SalesBillItem, PaymentDetail
 from rooms.models import Room, Guest
 from django.db.models import Sum, F, FloatField
 from django import forms
@@ -49,6 +50,9 @@ def custom_logout(request):
 
 @login_required(login_url='login')
 def dashboard(request):
+	from datetime import datetime, timedelta
+	from django.db.models import Count
+	
 	inventory_count = InventoryItem.objects.count()
 	total_inventory_amount = InventoryItem.objects.aggregate(
 		total=Sum(F('quantity') * F('price_per_unit'), output_field=FloatField())
@@ -57,11 +61,30 @@ def dashboard(request):
 	total_sales_amount = SalesBill.objects.aggregate(
 		total=Sum('total_amount')
 	)["total"] or 0
+	
+	# Get sales data for the last 7 days
+	today = datetime.now().date()
+	last_7_days = [today - timedelta(days=i) for i in range(6, -1, -1)]
+	
+	# Get daily sales amounts
+	daily_sales = []
+	daily_labels = []
+	for day in last_7_days:
+		next_day = day + timedelta(days=1)
+		sales_amount = SalesBill.objects.filter(
+			created_at__gte=day,
+			created_at__lt=next_day
+		).aggregate(total=Sum('total_amount'))['total'] or 0
+		daily_sales.append(float(sales_amount))
+		daily_labels.append(day.strftime('%b %d'))
+	
 	context = {
 		'inventory_count': inventory_count,
 		'total_inventory_amount': total_inventory_amount,
 		'sales_count': sales_count,
 		'total_sales_amount': total_sales_amount,
+		'daily_sales': json.dumps(daily_sales),
+		'daily_labels': json.dumps(daily_labels),
 	}
 	return render(request, 'dashboard/dashboard.html', context)
 
@@ -117,7 +140,7 @@ def inventory_delete(request, pk):
 class RoomForm(forms.ModelForm):
 	class Meta:
 		model = Room
-		fields = ['number', 'room_type', 'is_available', 'price_per_night']
+		fields = ['number', 'room_type', 'status', 'is_available', 'price_per_night']
 
 
 @login_required(login_url='login')
@@ -254,8 +277,15 @@ def sales_bill_create(request):
 						'price': food.price
 					})
 			
-			# Calculate total amount
-			bill.total_amount = items_total + room_charge
+			# Get discount values from form
+			discount_percentage = Decimal(request.POST.get('discount_percentage', 0))
+			discount_amount = Decimal(request.POST.get('discount_amount', 0))
+			
+			# Calculate total amount with discount
+			subtotal = items_total + room_charge
+			bill.discount_percentage = discount_percentage
+			bill.discount_amount = discount_amount
+			bill.total_amount = subtotal - discount_amount
 			bill.save()
 			
 			# Create bill items
@@ -266,6 +296,18 @@ def sales_bill_create(request):
 					quantity=item_data['quantity'],
 					price=item_data['price']
 				)
+			
+			# Handle multiple payment methods
+			payment_methods = request.POST.getlist('payment_methods[]')
+			payment_amounts = request.POST.getlist('payment_amounts[]')
+			
+			for method, amount in zip(payment_methods, payment_amounts):
+				if method and amount:
+					PaymentDetail.objects.create(
+						sales_bill=bill,
+						payment_method=method,
+						amount=Decimal(amount)
+					)
 			
 			return redirect('/dashboard/sales-bills/')
 	else:

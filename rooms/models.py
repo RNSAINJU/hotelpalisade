@@ -7,8 +7,15 @@ class Room(models.Model):
 		("double", "Double"),
 		("suite", "Suite"),
 	]
+	STATUS_CHOICES = [
+		("available", "Available"),
+		("booked", "Booked"),
+		("occupied", "Occupied"),
+		("maintenance", "Maintenance"),
+	]
 	number = models.CharField(max_length=10, unique=True)
 	room_type = models.CharField(max_length=10, choices=ROOM_TYPES)
+	status = models.CharField(max_length=15, choices=STATUS_CHOICES, default="available")
 	is_available = models.BooleanField(default=True)
 	price_per_night = models.DecimalField(max_digits=8, decimal_places=2)
 
