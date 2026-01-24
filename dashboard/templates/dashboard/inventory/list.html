@@ -3,54 +3,64 @@
 <div class="inventory-list-container">
     <div class="inventory-header">
         <h2>Inventory Items</h2>
-        <a href="/dashboard/inventory/create/" class="create-btn">+ Add Inventory Item</a>
+        <a href="/dashboard/inventory/create/" class="create-btn">+ Add Item</a>
     </div>
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Unit</th>
-                <th>Price/Unit</th>
-                <th>Last Updated</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.description|truncatechars:40 }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-                <td>Rs {{ item.price_per_unit|floatformat:2 }}</td>
-                <td>{{ item.last_updated|date:'Y-m-d H:i' }}</td>
-                <td>
-                    <a href="/dashboard/inventory/{{ item.id }}/update/" class="action-btn update-btn">Update</a>
-                    <a href="/dashboard/inventory/{{ item.id }}/delete/" class="action-btn delete-btn">Delete</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="6" style="text-align:center;">No inventory items found.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="hide-mobile">Description</th>
+                    <th>Qty</th>
+                    <th class="hide-mobile">Unit</th>
+                    <th>Price</th>
+                    <th class="hide-mobile">Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td data-label="Name">{{ item.name }}</td>
+                    <td data-label="Description" class="hide-mobile">{{ item.description|truncatechars:40 }}</td>
+                    <td data-label="Qty">{{ item.quantity }}</td>
+                    <td data-label="Unit" class="hide-mobile">{{ item.unit }}</td>
+                    <td data-label="Price">Rs {{ item.price_per_unit|floatformat:2 }}</td>
+                    <td data-label="Updated" class="hide-mobile">{{ item.last_updated|date:'Y-m-d' }}</td>
+                    <td data-label="Actions">
+                        <div class="action-buttons">
+                            <a href="/dashboard/inventory/{{ item.id }}/update/" class="action-btn update-btn">Edit</a>
+                            <a href="/dashboard/inventory/{{ item.id }}/delete/" class="action-btn delete-btn">Del</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;">No inventory items found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 <style>
 .inventory-list-container {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-    padding: 2em 2.5em;
-    margin: 2em auto;
-    max-width: 1100px;
+    padding: 1.5em;
+    margin: 1em;
+    max-width: 1200px;
 }
 .inventory-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5em;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+.inventory-header h2 {
+    margin: 0;
+    font-size: 1.5em;
 }
 .create-btn {
     background: #1abc9c;
@@ -59,19 +69,24 @@
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1em;
+    font-size: 0.95em;
     transition: background 0.2s;
+    white-space: nowrap;
 }
 .create-btn:hover {
     background: #159c85;
 }
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 .inventory-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 1em;
+    font-size: 0.95em;
 }
 .inventory-table th, .inventory-table td {
-    padding: 0.8em 1em;
+    padding: 0.8em;
     border-bottom: 1px solid #e0e0e0;
     text-align: left;
 }
@@ -83,28 +98,75 @@
 .inventory-table tr:last-child td {
     border-bottom: none;
 }
-    .action-btn {
-        padding: 0.4em 1em;
+.action-buttons {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+}
+.action-btn {
+    padding: 0.4em 0.8em;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.update-btn {
+    background: #f1c40f;
+    color: #fff;
+}
+.update-btn:hover {
+    background: #d4ac0d;
+}
+.delete-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .inventory-list-container {
+        padding: 1em;
+        margin: 0.5em;
         border-radius: 5px;
-        font-size: 0.97em;
-        font-weight: 500;
-        text-decoration: none;
-        margin-right: 0.5em;
-        transition: background 0.2s;
     }
-    .update-btn {
-        background: #f1c40f;
-        color: #fff;
+    .inventory-header h2 {
+        font-size: 1.2em;
     }
-    .update-btn:hover {
-        background: #d4ac0d;
+    .create-btn {
+        padding: 0.6em 1.2em;
+        font-size: 0.9em;
     }
-    .delete-btn {
-        background: #e74c3c;
-        color: #fff;
+    .hide-mobile {
+        display: none;
     }
-    .delete-btn:hover {
-        background: #c0392b;
+    .inventory-table {
+        font-size: 0.85em;
     }
+    .inventory-table th, .inventory-table td {
+        padding: 0.6em 0.4em;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .create-btn {
+        text-align: center;
+    }
+    .inventory-table {
+        font-size: 0.8em;
+    }
+    .action-btn {
+        font-size: 0.75em;
+        padding: 0.3em 0.6em;
+    }
+}
 </style>
 {% endblock %}

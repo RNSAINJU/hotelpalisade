@@ -35,9 +35,14 @@
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-    padding: 2em 2.5em;
-    margin: 2em auto;
+    padding: 1.5em;
+    margin: 1em;
     max-width: 600px;
+}
+.inventory-create-container h2 {
+    margin: 0 0 1em 0;
+    color: #2c3e50;
+    font-size: 1.5em;
 }
 .inventory-form .form-row {
     margin-bottom: 1.2em;
@@ -48,6 +53,7 @@
     font-weight: 500;
     margin-bottom: 0.4em;
     color: #2c3e50;
+    font-size: 0.95em;
 }
 .inventory-form input, .inventory-form textarea {
     padding: 0.7em 1em;
@@ -56,15 +62,18 @@
     font-size: 1em;
     background: #f4f8fb;
     color: #2c3e50;
+    width: 100%;
 }
 .inventory-form textarea {
     min-height: 80px;
     resize: vertical;
+    font-family: inherit;
 }
 .form-actions {
     display: flex;
     gap: 1em;
     margin-top: 1.5em;
+    flex-wrap: wrap;
 }
 .submit-btn {
     background: #1abc9c;
@@ -76,6 +85,8 @@
     font-size: 1em;
     cursor: pointer;
     transition: background 0.2s;
+    flex: 1;
+    min-width: 120px;
 }
 .submit-btn:hover {
     background: #159c85;
@@ -89,9 +100,43 @@
     font-weight: bold;
     font-size: 1em;
     transition: background 0.2s;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    display: inline-block;
 }
 .cancel-btn:hover {
     background: #b0b0b0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .inventory-create-container {
+        margin: 0.5em;
+        padding: 1em;
+        border-radius: 5px;
+    }
+    .inventory-create-container h2 {
+        font-size: 1.2em;
+    }
+    .inventory-form label {
+        font-size: 0.9em;
+    }
+    .inventory-form input, .inventory-form textarea {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-create-container {
+        padding: 0.8em;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .submit-btn, .cancel-btn {
+        width: 100%;
+    }
 }
 </style>
 {% endblock %}

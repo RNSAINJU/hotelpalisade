@@ -6,6 +6,9 @@
     <title>Hotel Palisade Admin</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Segoe+UI:400,700&display=swap">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -16,24 +19,53 @@
         header {
             background: #1abc9c;
             color: #fff;
-            padding: 1.2em 2em;
+            padding: 1em 1.5em;
             box-shadow: 0 2px 8px rgba(44,62,80,0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1em;
         }
         header h1 {
             margin: 0;
-            font-size: 1.7em;
-            letter-spacing: 2px;
+            font-size: 1.5em;
+            letter-spacing: 1px;
         }
         .user-info {
-            font-size: 1em;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+            flex-wrap: wrap;
         }
+        .user-info button {
+            background: none;
+            border: none;
+            color: #fff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0;
+        }
+        
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: #34495e;
+            color: #fff;
+            border: none;
+            padding: 0.8em 1.2em;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
         nav {
             background: #34495e;
             padding: 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         nav ul {
             list-style: none;
@@ -48,11 +80,12 @@
         }
         nav a {
             display: block;
-            padding: 1em 1.5em;
+            padding: 1em 1.2em;
             color: #ecf0f1;
             text-decoration: none;
             transition: background 0.3s;
             font-weight: 600;
+            white-space: nowrap;
         }
         nav a:hover, nav a.active {
             background: #1abc9c;
@@ -60,14 +93,65 @@
         }
         main {
             min-height: 80vh;
+            padding: 0.5em;
         }
         footer {
             background: #2c3e50;
             color: #fff;
             text-align: center;
-            padding: 1em 0;
-            font-size: 0.95em;
+            padding: 1em;
+            font-size: 0.85em;
             letter-spacing: 1px;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            header {
+                padding: 1em;
+            }
+            header h1 {
+                font-size: 1.2em;
+                flex: 1 1 100%;
+                text-align: center;
+            }
+            .user-info {
+                flex: 1 1 100%;
+                justify-content: center;
+                font-size: 0.85em;
+            }
+            
+            .menu-toggle {
+                display: block;
+                margin: 0 auto;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                display: none;
+            }
+            nav ul.active {
+                display: flex;
+            }
+            nav li {
+                width: 100%;
+                text-align: center;
+            }
+            nav a {
+                padding: 0.8em;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1em;
+            }
+            .user-info {
+                font-size: 0.8em;
+            }
+            footer {
+                font-size: 0.75em;
+            }
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -80,15 +164,16 @@
                 Welcome, <strong>{{ user.username }}</strong> |
                 <form method="post" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; color: #fff; text-decoration: underline; cursor: pointer; font-size: 1em;">Logout</button>
+                    <button type="submit">Logout</button>
                 </form>
             {% else %}
                 <a href="{% url 'login' %}" style="color:#fff;text-decoration:underline;">Login</a>
             {% endif %}
         </div>
     </header>
+    <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
     <nav>
-        <ul>
+        <ul id="navMenu">
             <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
             <li><a href="{% url 'inventory_list' %}">Inventory</a></li>
             <li><a href="{% url 'room_list' %}">Rooms</a></li>
@@ -103,5 +188,20 @@
     <footer>
         &copy; {{ year|default:2026 }} Hotel Palisade. All rights reserved.
     </footer>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking a link on mobile
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('navMenu').classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

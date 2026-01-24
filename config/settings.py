@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-nt+=(zewpjbt4ko**iwh--r6jc98_c@1!de)jw1!jd2s+0bdua
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hotelpalisade.pythonanywhere.com']
+ALLOWED_HOSTS = ['hotelpalisade.pythonanywhere.com','127.0.0.1:8000','localhost','127.0.0.1']
 
 
 # Application definition
